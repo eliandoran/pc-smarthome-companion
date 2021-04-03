@@ -1,5 +1,6 @@
 import psList from "ps-list";
 import fkill from "fkill";
+import { spawn } from "child_process";
 
 async function getProcessIds(name) {
     return (await psList())
@@ -19,6 +20,15 @@ export default class ProcessModule {
         for (const processId of processIds) {
             fkill(processId);
         }
+    }
+
+    async spawn(programName) {
+        const child = spawn(programName, [], {
+            detached: true,
+            stdio: [ "ignore", "ignore", "ignore" ]
+        });
+
+        child.unref();
     }
 
 }
