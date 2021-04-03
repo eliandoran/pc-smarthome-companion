@@ -1,0 +1,11 @@
+{
+  "name": "me.eliandoran.hacompanion",
+  "version": "1.0.0",
+  "description": "PC REST API for Home Assistant integrations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Elian Doran <contact@eliandoran.me>",
+  "license": "UNLICENSED"
+}
