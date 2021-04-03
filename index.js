@@ -7,6 +7,7 @@ async function main() {
 
     console.log(`Process: ${name}`);
     console.log(`\t Is running: ${isRunning}`);
+    processModule.kill(name);
 }
 
 main();
