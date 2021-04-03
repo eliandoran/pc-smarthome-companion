@@ -16,10 +16,9 @@ export default class ProcessModule {
     }
 
     async kill(programName) {
-        const processIds = await getProcessIds(programName);
-        for (const processId of processIds) {
-            fkill(processId);
-        }
+        const killPromises = (await getProcessIds(programName))
+            .map((processId) => fkill(processId));
+        return Promise.all(killPromises);
     }
 
     async spawn(programName) {
