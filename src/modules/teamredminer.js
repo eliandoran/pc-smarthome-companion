@@ -17,6 +17,10 @@ export default class TeamRedMinerModule {
             res.send(await this.getSummary());
         });
 
+        router.get("/gpus", async (req, res) => {
+            res.send(await this.getAllGpuInfo());
+        });
+
         router.get("/gpus/:gpuIndex", async (req, res) => {
             const gpuIndex = req.params.gpuIndex;
             res.send(await this.getGpuInfo(gpuIndex));
@@ -24,7 +28,24 @@ export default class TeamRedMinerModule {
     }
 
     async getSummary() {
-        return await this.request("summary");
+        const data = await this.request("summary");
+        return data["SUMMARY"];
+    }
+
+    async getAllGpuInfo() {
+        const data = await this.request("devs");
+        const result = {};
+        
+        for (const key in data) {
+            if (!key.startsWith("GPU=")) {
+                continue;
+            }
+
+            const gpuIndex = key.slice(4);
+            result[gpuIndex] = data[key];
+        }
+
+        return result;
     }
 
     async getGpuInfo(gpuIndex) {
@@ -50,7 +71,7 @@ export default class TeamRedMinerModule {
             .filter((group) => group.length > 0)
             .map((group) => group.split(","))
             .map((group) => group.map((entry) => entry.split("=", 2)));            
-        await socket.end();
+        await socket.end();        
         
         const parsedData = {};
         for (const section of data) {
@@ -64,6 +85,11 @@ export default class TeamRedMinerModule {
             }
 
             parsedData[sectionKey] = sectionData;
+        }
+
+        // Check response status.
+        if (!parsedData["STATUS=S"]) {
+            throw new "Invalid response.";
         }
 
         return parsedData;
