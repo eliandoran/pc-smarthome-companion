@@ -1,14 +1,13 @@
-import ProcessModule from "./modules/process.js";
+import express from "express";
 
-async function main() {
-    const processModule = new ProcessModule();
-    const name = "notepad.exe";
-    const isRunning = await processModule.isRunning(name);
+const PORT = 1337;
 
-    console.log(`Process: ${name}`);
-    console.log(`\t Is running: ${isRunning}`);
-    await processModule.kill(name);
-    await processModule.spawn(name);
-}
+const app = express();
 
-main();
+app.get("/", (req, res) => {
+    res.send("Hello world.");
+});
+
+app.listen(PORT, () => {
+    console.log(`Server listening on ${PORT}.`);
+});
