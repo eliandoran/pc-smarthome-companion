@@ -17,7 +17,6 @@ export default class ProcessModule {
             const programName = req.params.name;
             const isRunning = await this.isRunning(programName);
             console.log("Is running: ", programName, isRunning);
-            console.log("Is running finished @", Date.now());
             res.send({
                 isRunning
             });
