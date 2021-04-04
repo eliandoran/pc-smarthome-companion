@@ -18,6 +18,20 @@ export default class ProcessModule {
                 isRunning
             });
         });
+
+        router.put("/:name", async (req, res) => {
+            const body = req.body;
+            const programName = req.params.name;
+            const action = body?.action;
+
+            switch (action) {
+                case "kill":
+                    this.kill(programName);
+                    break;
+            }
+
+            res.status(204).send();
+        });
     }
 
     async isRunning(programName) {

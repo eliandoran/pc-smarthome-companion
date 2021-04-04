@@ -1,9 +1,12 @@
 import express from "express";
+import bodyParser from "body-parser";
+
 import ProcessModule from "./modules/process.js";
 
 const PORT = 1337;
 
 const app = express();
+app.use(bodyParser.json());
 
 const modules = [
     {
