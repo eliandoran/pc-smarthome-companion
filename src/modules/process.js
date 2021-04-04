@@ -26,10 +26,10 @@ export default class ProcessModule {
 
             switch (action) {
                 case "kill":
-                    this.kill(programName);
+                    await this.kill(programName);
                     break;
                 case "spawn":
-                    this.spawn(programName);
+                    await this.spawn(programName);
                     break;
                 case "respawn":
                     await this.kill(programName);
