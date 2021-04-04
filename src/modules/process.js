@@ -28,6 +28,9 @@ export default class ProcessModule {
                 case "kill":
                     this.kill(programName);
                     break;
+                case "spawn":
+                    this.spawn(programName);
+                    break;
             }
 
             res.status(204).send();
