@@ -4,7 +4,9 @@
   "description": "PC REST API for Home Assistant integrations",
   "main": "index.js",
   "type": "module",
-  "scripts": {
+  "scripts": {    
+    "start": "node ./src/index.js",
+    "watch": "nodemon ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Elian Doran <contact@eliandoran.me>",
@@ -13,5 +15,8 @@
     "express": "^4.17.1",
     "fkill": "^7.1.1",
     "ps-list": "^7.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
