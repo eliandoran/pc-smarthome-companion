@@ -10,6 +10,14 @@ async function getProcessIds(name) {
 
 export default class ProcessModule {
 
+    manageRouter(router) {
+        router.get("/:name/running", async (req, res) => {
+            const programName = req.params.name;
+            const isRunning = await this.isRunning(programName);
+            res.send(isRunning);
+        });
+    }
+
     async isRunning(programName) {
         const processIds = await getProcessIds(programName);
         return (processIds.length > 0);
