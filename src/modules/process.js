@@ -19,7 +19,7 @@ export default class ProcessModule {
             });
         });
 
-        router.put("/:name", async (req, res) => {
+        router.post("/:name", async (req, res) => {
             const body = req.body;
             const programName = req.params.name;
             const action = body?.action;
