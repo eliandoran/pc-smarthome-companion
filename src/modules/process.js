@@ -16,6 +16,8 @@ export default class ProcessModule {
         router.get("/:name", async (req, res) => {
             const programName = req.params.name;
             const isRunning = await this.isRunning(programName);
+            console.log("Is running: ", programName, isRunning);
+            console.log("Is running finished @", Date.now());
             res.send({
                 isRunning
             });
@@ -45,13 +47,14 @@ export default class ProcessModule {
             switch (action) {
                 case "kill":
                     await this.kill(programName, killOptions);
+                    console.log("Kill finished @", Date.now());
                     break;
                 case "spawn":
                     await this.spawn(program, body.arguments, spawnOptions);
                     break;
                 case "respawn":
                     await this.kill(programName, killOptions);
-                    this.spawn(program, body.arguments, spawnOptions);
+                    await this.spawn(program, body.arguments, spawnOptions);
                     break;
             }
 
@@ -65,6 +68,7 @@ export default class ProcessModule {
     }
 
     async kill(programName, killOptions) {
+        console.log("Kill:", programName, killOptions);
         const killPromises = (await getProcessIds(programName))
             .map((processId) => fkill(processId, killOptions));
         return Promise.all(killPromises);
