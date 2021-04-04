@@ -58,7 +58,9 @@ export default class TeamRedMinerModule {
             const sectionData = {};
 
             for (const entry of section) {
-                sectionData[entry[0]] = entry[1];
+                const rawValue = entry[1];
+                const parsedValue = (isNaN(rawValue) ? rawValue : parseFloat(rawValue));
+                sectionData[entry[0]] = parsedValue;
             }
 
             parsedData[sectionKey] = sectionData;
