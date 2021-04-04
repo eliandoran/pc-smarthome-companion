@@ -1,3 +1,4 @@
+import path from "path";
 import psList from "ps-list";
 import fkill from "fkill";
 import { spawn } from "child_process";
@@ -20,20 +21,31 @@ export default class ProcessModule {
         });
 
         router.post("/:name", async (req, res) => {
-            const body = req.body;
             const programName = req.params.name;
+            let program = programName;
+            const body = req.body;
             const action = body?.action;
+            const spawnOptions = {};
+
+            if (body.spawnPath) {
+                program = path.join(body.spawnPath, programName);
+            }
+
+            if (body.shell) {
+                spawnOptions.shell = true;
+                spawnOptions.detached = true;
+            }            
 
             switch (action) {
                 case "kill":
                     await this.kill(programName);
                     break;
                 case "spawn":
-                    await this.spawn(programName);
+                    await this.spawn(program, spawnOptions);
                     break;
                 case "respawn":
                     await this.kill(programName);
-                    this.spawn(programName);
+                    this.spawn(program, spawnOptions);
                     break;
             }
 
@@ -52,9 +64,11 @@ export default class ProcessModule {
         return Promise.all(killPromises);
     }
 
-    async spawn(programName) {
+    async spawn(programName, spawnOptions) {
+        console.log('Spawn:', programName, spawnOptions);
         const child = spawn(programName, [], {
             detached: true,
+            shell: spawnOptions?.shell,
             stdio: [ "ignore", "ignore", "ignore" ]
         });
 
