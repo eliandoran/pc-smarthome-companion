@@ -1,6 +1,7 @@
 import path from "path";
 import psList from "ps-list";
 import fkill from "fkill";
+import stringArgv from "string-argv";
 import { spawn } from "child_process";
 
 async function getProcessIds(name) {
@@ -26,6 +27,7 @@ export default class ProcessModule {
             const body = req.body;
             const action = body?.action;
             const spawnOptions = {};
+            const killOptions = {};
 
             if (body.spawnPath) {
                 program = path.join(body.spawnPath, programName);
@@ -36,16 +38,20 @@ export default class ProcessModule {
                 spawnOptions.detached = true;
             }            
 
+            if (body.forceKill) {
+                killOptions.force = true;
+            }
+
             switch (action) {
                 case "kill":
-                    await this.kill(programName);
+                    await this.kill(programName, killOptions);
                     break;
                 case "spawn":
-                    await this.spawn(program, spawnOptions);
+                    await this.spawn(program, body.arguments, spawnOptions);
                     break;
                 case "respawn":
-                    await this.kill(programName);
-                    this.spawn(program, spawnOptions);
+                    await this.kill(programName, killOptions);
+                    this.spawn(program, body.arguments, spawnOptions);
                     break;
             }
 
@@ -58,15 +64,16 @@ export default class ProcessModule {
         return (processIds.length > 0);
     }
 
-    async kill(programName) {
+    async kill(programName, killOptions) {
         const killPromises = (await getProcessIds(programName))
-            .map((processId) => fkill(processId));
+            .map((processId) => fkill(processId, killOptions));
         return Promise.all(killPromises);
     }
 
-    async spawn(programName, spawnOptions) {
-        console.log('Spawn:', programName, spawnOptions);
-        const child = spawn(programName, [], {
+    async spawn(programName, args, spawnOptions) {;
+        console.log('Spawn:', programName, args, spawnOptions);
+        args = stringArgv.parseArgsStringToArgv(args || []);
+        const child = spawn(programName, args, {
             detached: true,
             shell: spawnOptions?.shell,
             stdio: [ "ignore", "ignore", "ignore" ]
